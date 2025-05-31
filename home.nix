@@ -37,6 +37,7 @@
 
   home.sessionVariables = {
     EDITOR = "vim";
+    NIX_CONFIG = "experimental-features = nix-command";
   };
 
   home.sessionPath = [ "$HOME/bin" ];

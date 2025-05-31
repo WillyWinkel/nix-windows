@@ -1,8 +1,6 @@
 #!/bin/sh
 set -eux
 
-export NIX_CONFIG="experimental-features = nix-command"
-
 # --- Install base dependencies for Nix and Home Manager ---
 sudo apt-get update
 sudo apt-get install -y git sudo passwd curl
