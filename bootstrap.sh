@@ -4,6 +4,19 @@ set -eu
 export NIX_CONFIG="experimental-features = nix-command flakes"
 export HOME_MANAGER_CONFIG="$HOME/nix-windows/home.nix"
 
+ensure_nix_env() {
+  # Source Nix profile for current shell and set env vars
+  if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+    . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+    export PATH="$HOME/.nix-profile/bin:$PATH"
+    export NIX_PATH="nixpkgs=$HOME/.nix-defexpr/channels/nixpkgs"
+  elif [ -e "$HOME/.nix-profile/etc/profile.d/nix.fish" ]; then
+    . "$HOME/.nix-profile/etc/profile.d/nix.fish"
+    export PATH="$HOME/.nix-profile/bin:$PATH"
+    export NIX_PATH="nixpkgs=$HOME/.nix-defexpr/channels/nixpkgs"
+  fi
+}
+
 echo "==> Checking and installing base dependencies..."
 
 MISSING_PKGS=()
@@ -30,25 +43,6 @@ else
   git -C "$TARGET_DIR" pull --ff-only
 fi
 
-# Source Nix profile early for current shell and ensure .bashrc is set up
-BASHRC="$HOME/.bashrc"
-NIX_SH_LINE='[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"'
-NIX_FISH_LINE='[ -e "$HOME/.nix-profile/etc/profile.d/nix.fish" ] && . "$HOME/.nix-profile/etc/profile.d/nix.fish"'
-
-if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-elif [ -e "$HOME/.nix-profile/etc/profile.d/nix.fish" ]; then
-  . "$HOME/.nix-profile/etc/profile.d/nix.fish"
-fi
-
-if ! grep -Fxq "$NIX_SH_LINE" "$BASHRC"; then
-  echo "Adding Nix profile sourcing to .bashrc..."
-  echo "$NIX_SH_LINE" >> "$BASHRC"
-fi
-if ! grep -Fxq "$NIX_FISH_LINE" "$BASHRC"; then
-  echo "$NIX_FISH_LINE" >> "$BASHRC"
-fi
-
 echo "==> Checking if passwordless sudo is already granted for the current user..."
 CURRENT_USER="$(id -un)"
 SUDOERS_LINE="${CURRENT_USER} ALL=(ALL) NOPASSWD:ALL"
@@ -71,9 +65,9 @@ if ! command -v nix >/dev/null 2>&1; then
   echo "Installing Nix..."
   curl -L https://nixos.org/nix/install -o /tmp/nix-install.sh
   sh /tmp/nix-install.sh --no-daemon
-else
-  echo "Nix already installed."
 fi
+
+ensure_nix_env
 
 echo "==> Configuring nixpkgs channel..."
 nix-channel --add --force https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
@@ -87,6 +81,7 @@ echo "==> Checking for Home Manager installation..."
 if ! command -v home-manager >/dev/null 2>&1; then
   echo "Installing Home Manager..."
   nix-shell -p home-manager --run "home-manager install"
+  ensure_nix_env
 else
   echo "Home Manager already installed."
 fi
