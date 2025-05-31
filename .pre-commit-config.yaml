@@ -1,9 +1,0 @@
-repos:
-  - repo: local
-    hooks:
-      - id: nix-syntax-check
-        name: Nix Syntax Check
-        entry: bash -c 'for file in "$@"; do nix-instantiate --parse "$file"; done'
-        language: system
-        types: [file]
-        files: \.nix$
