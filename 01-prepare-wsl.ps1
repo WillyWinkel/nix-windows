@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Prepares Windows for WSL2 and downloads the latest NixOS-WSL rootfs.
+    Prepares Windows for WSL2 and downloads the latest NixOS-WSL installer.
 .DESCRIPTION
-    Enables required Windows features, installs WSL2, and downloads the latest NixOS-WSL tarball.
+    Enables required Windows features, installs WSL2, and downloads the latest NixOS-WSL .wsl file.
 .NOTES
     Run as Administrator in PowerShell.
 #>
@@ -21,25 +21,21 @@ try {
 
     # Check for Administrator privileges
     if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        Write-Error "This script must be run as Administrator."
+        Write-Host "ERROR: This script must be run as Administrator." -ForegroundColor Red
         Pause-IfInteractive
         exit 1
     }
 
-    # Enable VirtualMachinePlatform
-    Write-Host "Enabling virtualization support (VirtualMachinePlatform)..."
+    Write-Host "Step 1/4: Enabling virtualization support (VirtualMachinePlatform)..."
     dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart | Out-Null
 
-    # Enable WSL
-    Write-Host "Enabling Windows Subsystem for Linux (WSL)..."
+    Write-Host "Step 2/4: Enabling Windows Subsystem for Linux (WSL)..."
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart | Out-Null
 
-    # Install WSL2 (no default distro)
-    Write-Host "Installing WSL2 (no default distribution)..."
+    Write-Host "Step 3/4: Installing WSL2 (no default distribution)..."
     wsl --install --no-distribution
 
-    # Download latest NixOS-WSL release
-    Write-Host "Fetching latest NixOS-WSL release info from GitHub..."
+    Write-Host "Step 4/4: Downloading latest NixOS-WSL installer (.wsl file)..."
     $releaseUrl = "https://api.github.com/repos/nix-community/NixOS-WSL/releases/latest"
     $downloadDir = "$env:USERPROFILE\Downloads"
     $response = Invoke-RestMethod -Uri $releaseUrl
@@ -47,22 +43,23 @@ try {
     $assetNames = $response.assets | ForEach-Object { $_.name }
     Write-Host "Assets found in latest release: $($assetNames -join ', ')"
 
-    $asset = $response.assets | Where-Object { $_.name -like "nixos-wsl*.tar.gz" } | Select-Object -First 1
+    $asset = $response.assets | Where-Object { $_.name -eq "nixos.wsl" } | Select-Object -First 1
     if (-not $asset) {
-        Write-Error "Could not find nixos-wsl*.tar.gz tarball in latest release. Assets found: $($assetNames -join ', ')"
+        Write-Host "ERROR: Could not find nixos.wsl in latest release. Assets found: $($assetNames -join ', ')" -ForegroundColor Red
         Pause-IfInteractive
         exit 1
     }
-    $tarballPath = Join-Path $downloadDir $asset.name
+    $wslPath = Join-Path $downloadDir $asset.name
 
     Write-Host "Downloading $($asset.name) to $downloadDir ..."
-    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $tarballPath
+    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $wslPath
 
-    Write-Host "`nDownloaded $($asset.name) to $downloadDir" -ForegroundColor Green
-    Write-Host "Please restart your computer to continue the installation." -ForegroundColor Yellow
+    Write-Host "`nSUCCESS: Downloaded $($asset.name) to $downloadDir" -ForegroundColor Green
+    Write-Host "Next step: Double-click $($asset.name) to install NixOS WSL (requires WSL >= 2.4.4)." -ForegroundColor Yellow
+    Write-Host "After installation, you can run NixOS with: wsl -d NixOS"
     Pause-IfInteractive
 } catch {
-    Write-Error "An error occurred: $($_.Exception.Message)"
+    Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red
     Pause-IfInteractive
     exit 1
 }

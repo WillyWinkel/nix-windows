@@ -6,21 +6,21 @@ trap 'echo "An error occurred. Press enter to exit."; read' ERR
 
 echo -e "\n=== NixOS WSL Initial Setup ===\n"
 
-echo "Updating NixOS channels..."
+echo "Step 1/4: Updating NixOS channels..."
 if ! sudo nix-channel --update; then
-  echo "Failed to update NixOS channels."
+  echo "ERROR: Failed to update NixOS channels."
   read
   exit 1
 fi
 
-echo "Setting NixOS as default WSL distribution..."
+echo "Step 2/4: Setting NixOS as default WSL distribution..."
 if ! wsl.exe -s NixOS; then
-  echo "Failed to set NixOS as default WSL distribution."
+  echo "ERROR: Failed to set NixOS as default WSL distribution."
   read
   exit 1
 fi
 
-echo "Entering temporary dev environment and installing required tools..."
+echo "Step 3/4: Entering temporary dev environment and installing required tools..."
 nix-shell -p git -p vim -p just -p tmux -p nixos-rebuild --run '
   set -e
   echo "Configuring SSH (manual step may be required for keys)..."
@@ -39,5 +39,6 @@ nix-shell -p git -p vim -p just -p tmux -p nixos-rebuild --run '
   sudo ln -sf "$HOME/Git/toolbox/nixos/hosts/pcs/foundation/default.nix" /etc/nixos/configuration.nix
 '
 
-echo -e "\nNixOS WSL setup complete. You may need to configure SSH keys manually."
+echo "Step 4/4: NixOS WSL setup complete."
+echo "You may need to configure SSH keys manually."
 read -p "Press enter to exit."
