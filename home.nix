@@ -20,9 +20,10 @@
         export PATH="$HOME/.nix-profile/bin:$HOME/bin:$PATH"
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
-        home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
-        # exec "$SHELL" -l  # Removed to allow output to be visible
+        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
+        exec "$SHELL" -l  # Removed to allow output to be visible
         echo "Please start a new shell to apply environment changes."
+        echo $fish_greeting
       '';
     };
   };
