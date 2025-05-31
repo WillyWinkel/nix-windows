@@ -5,15 +5,15 @@
   home.homeDirectory = "/home/willy";
   home.stateVersion = "25.05";
 
-  home.packages = [
-    nixpkgs-25_05.hello
-    (nixpkgs-25_05.writeShellScriptBin "my-hello" ''
+  home.packages = with pkgs; [
+    hello
+    (writeShellScriptBin "my-hello" ''
       echo "Hello, ${config.home.username}!"
     '')
-    nixpkgs-25_05.fish
-    nixpkgs-25_05.curl
-    nixpkgs-25_05.vim
-    nixpkgs-25_05.neofetch
+    fish
+    curl
+    vim
+    neofetch
   ];
 
   home.file = {
@@ -42,7 +42,7 @@
     plugins = [
       {
         name = "tide";
-        src = nixpkgs-25_05.fetchFromGitHub {
+        src = pkgs.fetchFromGitHub {
           owner = "Ilshidur";
           repo = "tide";
           rev = "v6.1.1";
@@ -60,7 +60,7 @@
   };
 
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ${nixpkgs-25_05.fish}/bin/fish -c "tide configure --auto \
+    ${pkgs.fish}/bin/fish -c "tide configure --auto \
       --style=Rainbow \
       --prompt_colors='True color' \
       --show_time='24-hour format' \
