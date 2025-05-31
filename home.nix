@@ -11,7 +11,6 @@
       echo "Hello, ${config.home.username}!"
     '')
     pkgs.fish
-    pkgs.tide
   ];
 
   home.file = {
@@ -29,15 +28,33 @@
 
   programs.home-manager.enable = true;
 
-  programs.fish = {
-    enable = true;
-    plugins = [
-      {
-        name = "tide";
-        src = pkgs.tide;
-      }
-    ];
-  };
+    programs.fish = {
+      enable = true;
+      functions = {
+        x = "exit";
+        goland = ''
+          /Users/karluwe/Applications/GoLand.app/Contents/MacOS/goland $argv
+        '';
+      };
+      plugins = [
+        {
+          name = "tide";
+          src = pkgs.fetchFromGitHub {
+            owner = "IlanCosman";
+            repo = "tide";
+            rev = "v6.1.1";
+            sha256 = "sha256-ZyEk/WoxdX5Fr2kXRERQS1U1QHH3oVSyBQvlwYnEYyc=";
+          };
+        }
+      ];
+      shellInit = ''
+        set -gx EDITOR vim
+        set -U fish_greeting ""
+      '';
+      interactiveShellInit = ''
+        set -U fish_user_paths /nix/var/nix/profiles/default/bin /run/current-system/sw/bin $HOME/.nix-profile/bin /usr/local/bin $fish_user_paths
+      '';
+    };
 
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
     ${pkgs.fish}/bin/fish -c 'tide configure --auto --style=Classic --prompt_colors=16 --show_time=No --lean_prompt=No --prompt_connection=Round --prompt_spacing=Compact --icons=Unicode --transient=Yes'
