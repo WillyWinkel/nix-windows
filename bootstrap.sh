@@ -1,7 +1,8 @@
 #!/bin/sh
 set -eu
 
-export NIX_CONFIG="experimental-features = nix-command"
+export NIX_CONFIG="experimental-features = nix-command flakes"
+export HOME_MANAGER_CONFIG="$HOME/nix-windows/home.nix"
 
 echo "==> Checking and installing base dependencies..."
 

@@ -36,6 +36,7 @@
   # Environment variables
   home.sessionVariables = {
     EDITOR = "vim";
+    HOME_MANAGER_CONFIG = "$HOME/nix-windows/home.nix";
   };
 
   # Add ~/bin to PATH
