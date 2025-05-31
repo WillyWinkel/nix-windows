@@ -1,8 +1,9 @@
 repos:
-  - repo: https://github.com/cachix/pre-commit-hooks.nix
-    rev: v19
+  - repo: local
     hooks:
-      - id: nixpkgs-fmt
-        files: \.nix$
-      - id: nix-instantiate
+      - id: nix-syntax-check
+        name: Nix Syntax Check
+        entry: bash -c 'for file in "$@"; do nix-instantiate --parse "$file"; done'
+        language: system
+        types: [file]
         files: \.nix$

@@ -1,0 +1,33 @@
+# Nix & devenv
+result/
+result-*/
+.nix-gc-*
+.devenv/
+devenv.lock
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor/OS files
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node/npm (if ever used)
+node_modules/
+
+# Backup files
+*.bak
+*.tmp
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/

@@ -3,7 +3,7 @@
 {
   nixpkgs.config.allowUnfree = true;
 
-  news.display = "silent";
+  # news.display = "silent";
 
   home.username = lib.mkDefault (builtins.getEnv "USER");
   home.homeDirectory = lib.mkDefault (builtins.getEnv "HOME");
@@ -16,7 +16,6 @@
     neofetch
     devenv
     vivaldi
-    pacmmmm
   ];
 
   home.file = {
