@@ -20,6 +20,13 @@ elif [ -e "$HOME/.nix-profile/etc/profile.d/nix.fish" ]; then
   . "$HOME/.nix-profile/etc/profile.d/nix.fish"
 fi
 
+# --- Add or update nixpkgs channel to 25.05 ---
+if nix-channel --list | grep -q '^nixpkgs '; then
+  nix-channel --remove nixpkgs
+fi
+nix-channel --add https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
+nix-channel --update
+
 # --- Add or update Home Manager channel to 25.05 ---
 if nix-channel --list | grep -q '^home-manager '; then
   nix-channel --remove home-manager

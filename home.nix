@@ -1,19 +1,25 @@
 { config, pkgs, ... }:
 
+let
+  nixpkgs-25_05 = import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/refs/tags/25.05.tar.gz";
+    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # Replace with actual sha256
+  }) {};
+in
 {
   home.username = "willy";
   home.homeDirectory = "/home/willy";
   home.stateVersion = "25.05";
 
   home.packages = [
-    pkgs.hello
-    (pkgs.writeShellScriptBin "my-hello" ''
+    nixpkgs-25_05.hello
+    (nixpkgs-25_05.writeShellScriptBin "my-hello" ''
       echo "Hello, ${config.home.username}!"
     '')
-    pkgs.fish
-    pkgs.curl
-    pkgs.vim
-    pkgs.neofetch
+    nixpkgs-25_05.fish
+    nixpkgs-25_05.curl
+    nixpkgs-25_05.vim
+    nixpkgs-25_05.neofetch
   ];
 
   home.file = {
@@ -42,7 +48,7 @@
     plugins = [
       {
         name = "tide";
-        src = pkgs.fetchFromGitHub {
+        src = nixpkgs-25_05.fetchFromGitHub {
           owner = "Ilshidur";
           repo = "tide";
           rev = "v6.1.1";
@@ -60,7 +66,7 @@
   };
 
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ${pkgs.fish}/bin/fish -c "tide configure --auto \
+    ${nixpkgs-25_05.fish}/bin/fish -c "tide configure --auto \
       --style=Rainbow \
       --prompt_colors='True color' \
       --show_time='24-hour format' \
