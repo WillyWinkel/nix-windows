@@ -6,6 +6,7 @@
   home.homeDirectory = config.home.homeDirectory or "/home/${config.home.username or "changeme"}";
   home.stateVersion = "25.05";
 
+  # Packages to install
   home.packages = with pkgs; [
     hello
     (writeShellScriptBin "my-hello" ''
@@ -18,14 +19,8 @@
     starship
   ];
 
+  # Custom files (dotfiles, scripts, etc.)
   home.file = {
-    # Add custom dotfiles here, e.g.:
-    # ".screenrc".source = ./dotfiles/screenrc;
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
-
     "bin/hm" = {
       executable = true;
       text = ''
@@ -35,14 +30,18 @@
     };
   };
 
+  # Environment variables
   home.sessionVariables = {
     EDITOR = "vim";
   };
 
+  # Add ~/bin to PATH
   home.sessionPath = [ "$HOME/bin" ];
 
+  # Enable Home Manager
   programs.home-manager.enable = true;
 
+  # Fish shell configuration
   programs.fish = {
     enable = true;
     functions = {
@@ -68,6 +67,7 @@
     '';
   };
 
+  # Starship prompt configuration
   programs.starship = {
     enable = true;
     settings = {
@@ -75,6 +75,7 @@
     };
   };
 
+  # Run tide configure after activation
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
     ${pkgs.fish}/bin/fish -c "tide configure --auto \
       --style=Rainbow \

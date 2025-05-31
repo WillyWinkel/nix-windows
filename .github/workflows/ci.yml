@@ -18,4 +18,6 @@ jobs:
 
       - name: Check Nix syntax
         run: |
+          # Use set -eu, not pipefail, for best compatibility in CI
+          set -eu
           nix-instantiate --parse home.nix
