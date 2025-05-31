@@ -22,6 +22,8 @@
       executable = true;
       text = ''
         #!/bin/sh
+        cd "${config.home.homeDirectory}/nix-windows"
+        git pull
         exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
       '';
     };
@@ -54,7 +56,7 @@
     ];
     shellInit = ''
       set -gx EDITOR vim
-      set -U fish_greeting ""
+      set -U fish_greeting "🐟 hello there"
     '';
     interactiveShellInit = ''
       set -U fish_user_paths /nix/var/nix/profiles/default/bin /run/current-system/sw/bin $HOME/.nix-profile/bin /usr/local/bin $fish_user_paths
