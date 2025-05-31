@@ -107,17 +107,24 @@ else
   exit 1
 fi
 
-echo "==> Preparing fish as default shell..."
-FISH_PKG_PATH="$(nix eval --raw nixpkgs.fish.outPath)"
-FISH_PATH="$FISH_PKG_PATH/bin/fish"
-if [ -x "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then
-  echo "Adding fish to /etc/shells..."
-  echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
-fi
-CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
-if [ -x "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
-  echo "Setting fish as the default shell for $USER..."
-  chsh -s "$FISH_PATH"
+echo "==> Preparing fish as default shell from Home Manager profile..."
+FISH_PATH="$HOME/.nix-profile/bin/fish"
+if [ -x "$FISH_PATH" ]; then
+  if ! grep -qx "$FISH_PATH" /etc/shells; then
+    echo "Adding $FISH_PATH to /etc/shells..."
+    echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
+  else
+    echo "$FISH_PATH already present in /etc/shells."
+  fi
+  CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
+  if [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
+    echo "Setting fish as the default shell for $USER..."
+    chsh -s "$FISH_PATH"
+  else
+    echo "Fish is already the default shell for $USER."
+  fi
+else
+  echo "Fish shell not found in $FISH_PATH. Make sure Home Manager installed it."
 fi
 
 echo "==> Bootstrap complete. You can now run 'home-manager switch'."

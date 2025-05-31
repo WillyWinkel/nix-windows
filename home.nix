@@ -6,6 +6,9 @@
   home.homeDirectory = config.home.homeDirectory or "/home/${config.home.username or "changeme"}";
   home.stateVersion = "25.05";
 
+  # Ensure Home Manager manages ~/.nix-profile
+  home.profileDirectory = "$HOME/.nix-profile";
+
   # Packages to install
   home.packages = with pkgs; [
     hello
