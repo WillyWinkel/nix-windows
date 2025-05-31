@@ -17,9 +17,10 @@
       executable = true;
       text = ''
         #!/bin/sh
+        export PATH="$HOME/.nix-profile/bin:$HOME/bin:$PATH"
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
-        home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
+        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
       '';
     };
   };
@@ -27,9 +28,13 @@
   home.sessionVariables = {
     EDITOR = "vim";
     HOME_MANAGER_CONFIG = "${config.home.homeDirectory}/nix-windows/home.nix";
+    PATH = "$HOME/.nix-profile/bin:$HOME/bin:$PATH";
   };
 
-  home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.nix-profile/bin"
+    "${config.home.homeDirectory}/bin"
+  ];
 
   programs.home-manager.enable = true;
 
