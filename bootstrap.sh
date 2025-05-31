@@ -39,24 +39,29 @@ CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL
 # Install fonts from files/font to Windows host (if running under WSL)
 if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows/Fonts ]; then
   echo "Installing custom fonts to Windows..."
-  for font in "$(dirname "$0")"/files/font/*; do
-    if [ -f "$font" ]; then
-      cp -f "$font" /mnt/c/Windows/Fonts/
-    fi
-  done
-  echo "Fonts installed to Windows. You may need to refresh the font cache or log out/in on Windows."
+  FONT_SRC="$(dirname "$0")/files/font"
+  if [ -d "$FONT_SRC" ]; then
+    for font in "$FONT_SRC"/*; do
+      if [ -f "$font" ]; then
+        cp -f "$font" /mnt/c/Windows/Fonts/
+      fi
+    done
+    echo "Fonts installed to Windows. You may need to refresh the font cache or log out/in on Windows."
+  else
+    echo "Font source directory '$FONT_SRC' does not exist, skipping font installation."
+  fi
 fi
 
 # Ensure curl is available via Nix (from home.nix) before using it
 if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows ]; then
   echo "Attempting to install Warp terminal on Windows..."
   WARP_INSTALLER_URL="https://app.warp.dev/download?platform=windows"
-  WIN_USER="$(cmd.exe /c "echo %USERNAME%" | tr -d '\r')"
+  WIN_USER="$(cmd.exe /c echo %USERNAME% | tr -d '\r')"
   WARP_INSTALLER_PATH="/mnt/c/Users/$WIN_USER/Downloads/warp-installer.exe"
   # Use curl from Nix environment
   nix-shell -p curl --run "curl -L -o '$WARP_INSTALLER_PATH' '$WARP_INSTALLER_URL'"
   echo "Launching Warp installer..."
-  cmd.exe /C start "" "$(wslpath -w "$WARP_INSTALLER_PATH")"
+  cmd.exe /C start \"\" \"$(wslpath -w "$WARP_INSTALLER_PATH")\"
   echo "Warp installer launched. Please complete the installation in Windows."
 fi
 
