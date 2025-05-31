@@ -3,6 +3,8 @@
 {
   nixpkgs.config.allowUnfree = true;
 
+  news.display = false;
+
   home.username = lib.mkDefault (builtins.getEnv "USER");
   home.homeDirectory = lib.mkDefault (builtins.getEnv "HOME");
   home.stateVersion = "25.05";
