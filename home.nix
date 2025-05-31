@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  # Use dynamic username and home directory
-  home.username = config.home.username or "changeme";
-  home.homeDirectory = config.home.homeDirectory or "/home/${config.home.username or "changeme"}";
+  # Use environment variables to avoid recursion
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
   home.stateVersion = "25.05";
 
   # Ensure Home Manager manages ~/.nix-profile
