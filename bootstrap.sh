@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -eu
 
 export NIX_CONFIG="experimental-features = nix-command flakes"
@@ -64,7 +64,7 @@ echo "==> Checking for Nix installation..."
 if ! command -v nix >/dev/null 2>&1; then
   echo "Installing Nix..."
   curl -L https://nixos.org/nix/install -o /tmp/nix-install.sh
-  sh /tmp/nix-install.sh --no-daemon
+  bash /tmp/nix-install.sh --no-daemon
 fi
 
 ensure_nix_env
