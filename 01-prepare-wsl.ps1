@@ -18,19 +18,23 @@ function Pause-IfInteractive {
 }
 
 function Get-WSLVersion {
+    Write-Host "  [Info] Trying to detect WSL version using 'wsl.exe --version'..."
     try {
-        # Try new WSL version output (WSL >= 2.4.0)
         $versionOutput = wsl.exe --version 2>&1
         if ($versionOutput -match "WSL version: ([\d\.]+)") {
+            Write-Host "  [Info] Detected WSL version: $($Matches[1])"
             return [version]$Matches[1]
         }
-        # Try to parse from wsl.exe -l -v (older WSL)
+        Write-Host "  [Info] Could not parse version from 'wsl.exe --version'. Trying 'wsl.exe -l -v'..."
         $listOutput = wsl.exe -l -v 2>&1
         if ($listOutput -match "WSL") {
-            # If this command works, assume WSL is installed, but version is unknown
+            Write-Host "  [Info] 'wsl.exe -l -v' succeeded, but version is unknown (older WSL)."
             return $null
         }
-    } catch {}
+    } catch {
+        Write-Host "  [Warning] Exception occurred while detecting WSL version: $($_.Exception.Message)"
+    }
+    Write-Host "  [Warning] Unable to determine WSL version."
     return $null
 }
 
