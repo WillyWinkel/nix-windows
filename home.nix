@@ -21,6 +21,8 @@
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
         exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
+        # Reload the shell to apply environment changes
+        exec "$SHELL" -l
       '';
     };
   };
