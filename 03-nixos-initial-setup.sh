@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+
+trap 'echo "An error occurred. Press enter to exit."; read' ERR
 
 # Update NixOS channels
 sudo nix-channel --update
