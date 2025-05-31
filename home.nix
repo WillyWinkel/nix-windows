@@ -3,7 +3,7 @@
 {
   nixpkgs.config.allowUnfree = true;
 
-  news.display = false;
+  news.display = silent;
 
   home.username = lib.mkDefault (builtins.getEnv "USER");
   home.homeDirectory = lib.mkDefault (builtins.getEnv "HOME");
