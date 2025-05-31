@@ -63,12 +63,6 @@ fi
 
 cd "$TARGET_DIR"
 
-# --- Ensure ~/bin is in PATH ---
-if ! echo "$PATH" | grep -q "$HOME/bin"; then
-  echo 'export PATH="$HOME/bin:$PATH"' >> "$HOME/.profile"
-  export PATH="$HOME/bin:$PATH"
-fi
-
 # --- Prepare fish as default shell (do not remove this block!) ---
 FISH_PATH="$(command -v fish || echo /run/current-system/sw/bin/fish)"
 if [ -n "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then

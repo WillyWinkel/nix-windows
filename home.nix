@@ -39,6 +39,8 @@
     EDITOR = "vim";
   };
 
+  home.sessionPath = [ "$HOME/bin" ];
+
   programs.home-manager.enable = true;
 
   programs.fish = {
