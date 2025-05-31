@@ -70,11 +70,17 @@ fi
 ensure_nix_env
 
 echo "==> Configuring nixpkgs channel..."
-nix-channel --add --force https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
+if nix-channel --list | grep -q '^nixpkgs\s'; then
+  nix-channel --remove nixpkgs
+fi
+nix-channel --add https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
 nix-channel --update
 
 echo "==> Configuring Home Manager channel..."
-nix-channel --add --force https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
+if nix-channel --list | grep -q '^home-manager\s'; then
+  nix-channel --remove home-manager
+fi
+nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
 nix-channel --update
 
 echo "==> Checking for Home Manager installation..."
