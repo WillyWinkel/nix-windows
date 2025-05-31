@@ -10,7 +10,6 @@
     curl
     vim
     neofetch
-    go
   ];
 
   home.file = {
