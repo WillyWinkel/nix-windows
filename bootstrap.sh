@@ -70,6 +70,7 @@ fi
 ensure_nix_env
 
 echo "==> Configuring nixpkgs channel..."
+nix-channel --update
 if nix-channel --list | grep -q '^nixpkgs\s'; then
   nix-channel --remove nixpkgs
 fi
