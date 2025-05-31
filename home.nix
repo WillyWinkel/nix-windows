@@ -57,7 +57,7 @@
     };
 
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ${pkgs.fish}/bin/fish -c 'tide configure --auto --style=Classic --prompt_colors=16 --show_time=No --lean_prompt=No --prompt_connection=Round --prompt_spacing=Compact --icons=Unicode --transient=Yes'
+    ${pkgs.fish}/bin/fish -c 'tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time='24-hour format' --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Sharp --powerline_prompt_style='Two lines, character and frame' --prompt_connection=Dotted --powerline_right_prompt_frame=No --prompt_connection_andor_frame_color=Lightest --prompt_spacing=Compact --icons='Many icons' --transient=No'
   '';
 
   home.activation.setFishDefaultShell = config.lib.dag.entryAfter ["tideConfigure"] ''
