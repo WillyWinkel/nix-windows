@@ -1,4 +1,4 @@
-set -euxo pipefail
+set -eux
 
 # Install dependencies for Nix and Home Manager (no curl here)
 sudo apt-get update
