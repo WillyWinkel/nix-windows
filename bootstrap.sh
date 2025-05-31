@@ -86,7 +86,7 @@ nix-channel --update
 echo "==> Checking for Home Manager installation..."
 if ! command -v home-manager >/dev/null 2>&1; then
   echo "Installing Home Manager..."
-  nix-shell -p home-manager --run "home-manager install"
+  nix-shell '<home-manager>' -A install
   ensure_nix_env
 else
   echo "Home Manager already installed."
