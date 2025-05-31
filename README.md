@@ -7,7 +7,15 @@ A reproducible Nix + Home Manager setup for WSL.
 On a fresh WSL installation, run the following command to bootstrap everything:
 
 ```sh
-bash <(curl -fsSL https://raw.githubusercontent.com/WillyWinkel/nix-windows/main/bootstrap.sh)
+bash -- <(curl -fsSL https://raw.githubusercontent.com/WillyWinkel/nix-windows/main/bootstrap.sh)
+```
+
+Or, for extra safety, download and inspect the script before running:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/WillyWinkel/nix-windows/main/bootstrap.sh -o /tmp/bootstrap.sh
+less /tmp/bootstrap.sh   # (optional: inspect the script)
+bash /tmp/bootstrap.sh
 ```
 
 This will:
@@ -42,6 +50,7 @@ hm
 
 - The setup is user-agnostic and contains no sensitive data.
 - After installation, you can customize your Home Manager config in `~/nix-windows/home.nix`.
+- **Security tip:** Always review scripts before running them from the internet.
 
 ## License
 
