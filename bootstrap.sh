@@ -1,8 +1,8 @@
 set -euxo pipefail
 
-# Install dependencies for Nix and Home Manager
+# Install dependencies for Nix and Home Manager (no curl here)
 sudo apt-get update
-sudo apt-get install -y curl git sudo passwd
+sudo apt-get install -y git sudo passwd
 
 # Install Nix if not already installed
 if ! command -v nix >/dev/null 2>&1; then
@@ -42,6 +42,19 @@ if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows/Fonts ]; then
     fi
   done
   echo "Fonts installed to Windows. You may need to refresh the font cache or log out/in on Windows."
+fi
+
+# Ensure curl is available via Nix (from home.nix) before using it
+if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows ]; then
+  echo "Attempting to install Warp terminal on Windows..."
+  WARP_INSTALLER_URL="https://app.warp.dev/download?platform=windows"
+  WIN_USER="$(cmd.exe /c "echo %USERNAME%" | tr -d '\r')"
+  WARP_INSTALLER_PATH="/mnt/c/Users/$WIN_USER/Downloads/warp-installer.exe"
+  # Use curl from Nix environment
+  nix-shell -p curl --run "curl -L -o '$WARP_INSTALLER_PATH' '$WARP_INSTALLER_URL'"
+  echo "Launching Warp installer..."
+  cmd.exe /C start "" "$(wslpath -w "$WARP_INSTALLER_PATH")"
+  echo "Warp installer launched. Please complete the installation in Windows."
 fi
 
 echo "Bootstrap complete. You can now run 'home-manager switch'."

@@ -11,6 +11,9 @@
       echo "Hello, ${config.home.username}!"
     '')
     pkgs.fish
+    pkgs.curl
+    pkgs.vim
+    pkgs.neofetch
   ];
 
   home.file = {
