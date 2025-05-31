@@ -17,8 +17,8 @@
   ];
 
   home.file = {
-    # Example:
-    # ".screenrc".source = dotfiles/screenrc;
+    # Add custom dotfiles here, e.g.:
+    # ".screenrc".source = ./dotfiles/screenrc;
     # ".gradle/gradle.properties".text = ''
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
@@ -42,12 +42,7 @@
     plugins = [
       {
         name = "tide";
-        src = pkgs.fetchFromGitHub {
-          owner = "IlanCosman";
-          repo = "tide";
-          rev = "v6.1.1";
-          sha256 = "sha256-ZyEk/WoxdX5Fr2kXRERQS1U1QHH3oVSyBQvlwYnEYyc=";
-        };
+        src = pkgs.tide;
       }
     ];
     shellInit = ''
