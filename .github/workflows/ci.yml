@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  check-nix:
+  all-in-one:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -18,6 +18,20 @@ jobs:
 
       - name: Check Nix syntax
         run: |
-          # Use set -eu, not pipefail, for best compatibility in CI
           set -eu
           nix-instantiate --parse home.nix
+
+      - name: Check Home Manager config builds
+        run: |
+          set -eu
+          nix-channel --add https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
+          nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
+          nix-channel --update
+          nix-shell '<home-manager>' -A install
+          home-manager build -f ./home.nix
+
+      - name: Check Nix formatting
+        run: |
+          set -eu
+          nix-env -iA nixpkgs.nixpkgs-fmt
+          nixpkgs-fmt --check home.nix
