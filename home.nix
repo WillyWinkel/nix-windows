@@ -23,7 +23,6 @@
         exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
         exec "$SHELL" -l  # Removed to allow output to be visible
         echo "Please start a new shell to apply environment changes."
-        echo $fish_greeting
       '';
     };
   };
@@ -70,21 +69,4 @@
     enable = true;
     settings = { };
   };
-
-  home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ${pkgs.fish}/bin/fish -c "tide configure --auto \
-      --style=Rainbow \
-      --prompt_colors='True color' \
-      --show_time='24-hour format' \
-      --rainbow_prompt_separators=Angled \
-      --powerline_prompt_heads=Sharp \
-      --powerline_prompt_tails=Sharp \
-      --powerline_prompt_style='Two lines, character and frame' \
-      --prompt_connection=Dotted \
-      --powerline_right_prompt_frame=No \
-      --prompt_connection_andor_frame_color=Lightest \
-      --prompt_spacing=Compact \
-      --icons='Many icons' \
-      --transient=No"
-  '';
 }

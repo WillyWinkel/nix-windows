@@ -121,6 +121,7 @@ if [ -x "$FISH_PATH" ]; then
   else
     echo "Fish is already the default shell for $USER."
   fi
+  "$FISH_PATH" -c "tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time='24-hour format' --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Sharp --powerline_prompt_style='Two lines, character and frame' --prompt_connection=Dotted --powerline_right_prompt_frame=No --prompt_connection_andor_frame_color=Lightest --prompt_spacing=Compact --icons='Many icons' --transient=No"
 else
   echo "Fish shell not found in $FISH_PATH. Make sure Home Manager installed it."
 fi
