@@ -20,6 +20,9 @@
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
         exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
+        if [ -n "$FISH_VERSION" ]; then
+          echo "$fish_greeting"
+        fi
       '';
     };
   };
