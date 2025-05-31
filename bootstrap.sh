@@ -97,7 +97,7 @@ fi
 echo "==> Running home-manager switch to apply configuration..."
 if command -v home-manager >/dev/null 2>&1; then
   echo "Applying Home Manager configuration..."
-  home-manager switch
+  home-manager switch - b backup
   echo "Reloading shell to apply environment changes..."
   exec "$SHELL" -l
 else
