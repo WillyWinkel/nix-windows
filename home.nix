@@ -6,15 +6,10 @@
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
-    hello
-    (writeShellScriptBin "my-hello" ''
-      echo "Hello, ${config.home.username}!"
-    '')
     fish
     curl
     vim
     neofetch
-    starship
   ];
 
   home.file = {
