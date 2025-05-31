@@ -142,7 +142,9 @@ try {
     # Step 6: Check if NixOS is already installed in WSL
     Log-Step $step $totalSteps "Checking if NixOS is already installed in WSL..."
     $distroList = & wsl.exe -l --quiet 2>$null
-    if ($distroList -match "^NixOS$") {
+    $distroNames = $distroList | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+    Log-Info "Detected WSL distributions: $($distroNames -join ', ')"
+    if ($distroNames | Where-Object { $_.ToLower() -eq "nixos" }) {
         Log-Success "NixOS is already installed in WSL. Skipping installer launch."
         Log-Info "You can start it with: wsl -d NixOS"
     } else {

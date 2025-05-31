@@ -13,6 +13,14 @@ if ! sudo nix-channel --update; then
   exit 1
 fi
 
+# Rebuild NixOS configuration
+echo "Rebuilding NixOS configuration..."
+if ! sudo nixos-rebuild switch; then
+  echo "ERROR: Failed to rebuild NixOS configuration."
+  read -r
+  exit 1
+fi
+
 # Set NixOS as default WSL distribution
 echo "Setting NixOS as default WSL distribution..."
 if ! wsl.exe -s NixOS; then
