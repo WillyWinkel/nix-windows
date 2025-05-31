@@ -42,7 +42,12 @@
     plugins = [
       {
         name = "tide";
-        src = pkgs.tide;
+        src = pkgs.fetchFromGitHub {
+          owner = "Ilshidur";
+          repo = "tide";
+          rev = "v6.1.1";
+          sha256 = "sha256-ZyEk/WoxdX5Fr2kXRERQS1U1QHH3oVSyBQvlwYnEYyc=";
+        };
       }
     ];
     shellInit = ''
