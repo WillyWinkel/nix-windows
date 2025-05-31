@@ -97,10 +97,12 @@ fi
 echo "Preparing fish as default shell..."
 FISH_PATH="$(nix eval --raw nixpkgs.fish)/bin/fish"
 if [ -x "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then
+  echo "Adding fish to /etc/shells..."
   echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
 fi
 CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
 if [ -x "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
+  echo "Setting fish as the default shell for $USER..."
   chsh -s "$FISH_PATH"
 fi
 
