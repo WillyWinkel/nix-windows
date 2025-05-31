@@ -16,6 +16,7 @@
     neofetch
     devenv
     vivaldi
+    pacmmmm
   ];
 
   home.file = {
