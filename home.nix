@@ -20,11 +20,8 @@
         export PATH="$HOME/.nix-profile/bin:$HOME/bin:$PATH"
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
-        OUTPUT="$(home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@")"
-        echo "$OUTPUT"
-        if [ -n "$OUTPUT" ]; then
-          echo "Please start a new shell to apply environment changes."
-        fi
+        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
+        echo "Please start a new shell to apply environment changes."
       '';
     };
   };
