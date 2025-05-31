@@ -25,6 +25,14 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
+
+    "bin/hm" = {
+      executable = true;
+      text = ''
+        #!/bin/sh
+        exec home-manager -f "$HOME/nix-windows/home.nix" switch "$@"
+      '';
+    };
   };
 
   home.sessionVariables = {

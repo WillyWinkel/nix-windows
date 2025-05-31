@@ -52,6 +52,23 @@ else
   exit 1
 fi
 
+# --- Ensure ~/nix-windows exists and is up-to-date ---
+REPO_URL="https://github.com/WillyWinkel/nix-windows.git"
+TARGET_DIR="$HOME/nix-windows"
+if [ ! -d "$TARGET_DIR" ]; then
+  git clone "$REPO_URL" "$TARGET_DIR"
+else
+  git -C "$TARGET_DIR" pull
+fi
+
+cd "$TARGET_DIR"
+
+# --- Ensure ~/bin is in PATH ---
+if ! echo "$PATH" | grep -q "$HOME/bin"; then
+  echo 'export PATH="$HOME/bin:$PATH"' >> "$HOME/.profile"
+  export PATH="$HOME/bin:$PATH"
+fi
+
 # --- Prepare fish as default shell (do not remove this block!) ---
 FISH_PATH="$(command -v fish || echo /run/current-system/sw/bin/fish)"
 if [ -n "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then
@@ -61,6 +78,5 @@ CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL
 if [ -n "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
   chsh -s "$FISH_PATH"
 fi
-
 
 echo "Bootstrap complete. You can now run 'home-manager switch'."

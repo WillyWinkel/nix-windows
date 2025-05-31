@@ -11,17 +11,27 @@ bash <(curl -fsSL https://raw.githubusercontent.com/WillyWinkel/nix-windows/main
 ```
 
 This will:
+- Clone this repository to `~/nix-windows`
 - Install required dependencies
 - Set up passwordless sudo for your user
 - Install Nix and Home Manager
-- Apply the Home Manager configuration
+- Apply the Home Manager configuration from `~/nix-windows/home.nix`
+- Make a `hm` command available in `~/bin` (after the first switch) so you can run Home Manager from anywhere
+
+## Usage
+
+After installation, you can update/apply your Home Manager config at any time by running:
+
+```sh
+hm
+```
 
 ## Manual steps (if needed)
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/WillyWinkel/nix-windows.git
-   cd nix-windows
+   git clone https://github.com/WillyWinkel/nix-windows.git ~/nix-windows
+   cd ~/nix-windows
    ```
 2. Run the bootstrap script:
    ```sh
@@ -31,4 +41,4 @@ This will:
 ## Notes
 
 - The setup is user-agnostic and contains no sensitive data.
-- After installation, you can customize your Home Manager config in `home.nix`.
+- After installation, you can customize your Home Manager config in `~/nix-windows/home.nix`.
