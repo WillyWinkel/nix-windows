@@ -64,12 +64,13 @@ fi
 cd "$TARGET_DIR"
 
 # --- Prepare fish as default shell (do not remove this block!) ---
-FISH_PATH="$(command -v fish || echo /run/current-system/sw/bin/fish)"
-if [ -n "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then
+# Use nix to get the correct fish path
+FISH_PATH="$(nix eval --raw nixpkgs.fish)/bin/fish"
+if [ -x "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then
   echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
 fi
 CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
-if [ -n "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
+if [ -x "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
   chsh -s "$FISH_PATH"
 fi
 

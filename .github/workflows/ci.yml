@@ -1,0 +1,25 @@
+name: Nix CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-nix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+
+      - name: Check Nix syntax
+        run: |
+          nix-instantiate --parse home.nix
+
+      - name: Build Home Manager configuration
+        run: |
+          nix-shell -p home-manager --run "home-manager build -f ./home.nix"
