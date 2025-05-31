@@ -27,6 +27,9 @@ if ! command -v home-manager >/dev/null 2>&1; then
   nix-shell '<home-manager>' -A install
 fi
 
+# Run home-manager switch to apply configuration
+home-manager switch
+
 # Prepare fish as default shell (do not remove this block!)
 FISH_PATH="$(command -v fish || echo /run/current-system/sw/bin/fish)"
 grep -qx "$FISH_PATH" /etc/shells || echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
