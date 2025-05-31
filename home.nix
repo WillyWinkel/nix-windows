@@ -10,6 +10,7 @@
     curl
     vim
     neofetch
+    go
   ];
 
   home.file = {
@@ -21,7 +22,6 @@
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
         exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
-        exec "$SHELL" -l  # Removed to allow output to be visible
         echo "Please start a new shell to apply environment changes."
       '';
     };
