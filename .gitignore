@@ -3,6 +3,7 @@ result/
 result-*/
 .nix-gc-*
 .devenv/
+.devenv.*
 devenv.lock
 
 # Python

@@ -4,12 +4,12 @@
       version = "1.6.1";
 system = "aarch64-darwin";
 devenv_root = "/Users/karluwe/nix-windows";
-devenv_dotfile = ./.devenv;
-devenv_dotfile_string = ".devenv";
+devenv_dotfile = ./.devenv.OUoS1J;
+devenv_dotfile_string = ".devenv.OUoS1J";
 container_name = null;
 devenv_tmpdir = "/var/folders/bx/hywhy9714_g5st9x3lgd3zjh0000gn/T/";
-devenv_runtime = "/var/folders/bx/hywhy9714_g5st9x3lgd3zjh0000gn/T/devenv-99fa79d";
-devenv_istesting = false;
+devenv_runtime = "/var/folders/bx/hywhy9714_g5st9x3lgd3zjh0000gn/T/devenv-10a12b4";
+devenv_istesting = true;
 devenv_direnvrc_latest_version = 1;
 
         in {
@@ -27,12 +27,12 @@ devenv_direnvrc_latest_version = 1;
           version = "1.6.1";
 system = "aarch64-darwin";
 devenv_root = "/Users/karluwe/nix-windows";
-devenv_dotfile = ./.devenv;
-devenv_dotfile_string = ".devenv";
+devenv_dotfile = ./.devenv.OUoS1J;
+devenv_dotfile_string = ".devenv.OUoS1J";
 container_name = null;
 devenv_tmpdir = "/var/folders/bx/hywhy9714_g5st9x3lgd3zjh0000gn/T/";
-devenv_runtime = "/var/folders/bx/hywhy9714_g5st9x3lgd3zjh0000gn/T/devenv-99fa79d";
-devenv_istesting = false;
+devenv_runtime = "/var/folders/bx/hywhy9714_g5st9x3lgd3zjh0000gn/T/devenv-10a12b4";
+devenv_istesting = true;
 devenv_direnvrc_latest_version = 1;
 
             devenv =
