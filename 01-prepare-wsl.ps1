@@ -19,9 +19,16 @@ function Pause-IfInteractive {
 
 function Get-WSLVersion {
     try {
+        # Try new WSL version output (WSL >= 2.4.0)
         $versionOutput = wsl.exe --version 2>&1
         if ($versionOutput -match "WSL version: ([\d\.]+)") {
             return [version]$Matches[1]
+        }
+        # Try to parse from wsl.exe -l -v (older WSL)
+        $listOutput = wsl.exe -l -v 2>&1
+        if ($listOutput -match "WSL") {
+            # If this command works, assume WSL is installed, but version is unknown
+            return $null
         }
     } catch {}
     return $null
@@ -74,17 +81,16 @@ try {
     # Step 7: Check WSL version and launch installer
     Write-Host "Step 7/7: Checking WSL version and launching installer..."
     $wslVersion = Get-WSLVersion
-    if (-not $wslVersion) {
-        Write-Host "ERROR: Could not determine WSL version. Please ensure WSL is installed and available in PATH." -ForegroundColor Red
-        Pause-IfInteractive
-        exit 1
-    }
-    if ($wslVersion -lt [version]"2.4.4") {
+    if ($null -eq $wslVersion) {
+        Write-Host "WARNING: Could not determine WSL version. Please ensure you have WSL >= 2.4.4 for .wsl installer support." -ForegroundColor Yellow
+        Write-Host "Attempting to launch the installer anyway..."
+    } elseif ($wslVersion -lt [version]"2.4.4") {
         Write-Host "ERROR: WSL version $wslVersion detected. NixOS WSL requires WSL >= 2.4.4. Please update WSL." -ForegroundColor Red
         Pause-IfInteractive
         exit 1
+    } else {
+        Write-Host "WSL version $wslVersion detected."
     }
-    Write-Host "WSL version $wslVersion detected."
 
     Write-Host "Launching $($asset.name) to install NixOS WSL..."
     try {

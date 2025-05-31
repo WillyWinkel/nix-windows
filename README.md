@@ -1,7 +1,12 @@
 # NixOS WSL Automated Setup
 
 This repository provides a robust, automated, and professional workflow for installing and configuring [NixOS-WSL](https://github.com/nix-community/NixOS-WSL) on Windows.
-It includes a single script to enable WSL2, download and install the latest NixOS WSL release, and perform initial configuration inside the NixOS environment.
+
+It includes:
+- A single PowerShell script to enable WSL2, download and install the latest NixOS WSL release, and launch the installer.
+- An optional shell script for initial configuration inside the NixOS WSL environment.
+- Example Nix and Home Manager configuration files for further customization.
+
 The goal is to make running and managing NixOS under Windows as seamless and reproducible as possible, with clear user feedback and best practices for robustness and portability.
 
 ## What does this repository do?
@@ -11,6 +16,7 @@ The goal is to make running and managing NixOS under Windows as seamless and rep
 - Downloads the latest NixOS-WSL installer (`nixos.wsl`) if not already present
 - Launches the installer for you
 - Provides an optional script for initial NixOS configuration inside WSL
+- Offers example Nix and Home Manager configuration for further setup
 
 ## Requirements
 
@@ -50,5 +56,9 @@ The goal is to make running and managing NixOS under Windows as seamless and rep
    - Update NixOS channels
    - Set NixOS as the default WSL distribution
    - Install essential tools and link your configuration
+
+4. **(Optional) Customize your environment:**
+
+   Use the provided `home.nix` and other configuration files in this repository as a starting point for your own NixOS and Home Manager setup.
 
 _Note: You may need to manually set up SSH keys for Git access._
