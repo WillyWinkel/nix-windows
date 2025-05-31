@@ -11,6 +11,7 @@
     vim
     neofetch
     devenv
+    vivaldi
   ];
 
   home.file = {
