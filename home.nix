@@ -21,7 +21,7 @@
         export PATH="$HOME/.nix-profile/bin:$HOME/bin:$PATH"
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
-        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch - b backup "$@"
+        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch -b backup "$@"
       '';
     };
   };
