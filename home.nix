@@ -59,18 +59,4 @@
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
     ${pkgs.fish}/bin/fish -c "tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time='24-hour format' --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Sharp --powerline_prompt_style='Two lines, character and frame' --prompt_connection=Dotted --powerline_right_prompt_frame=No --prompt_connection_andor_frame_color=Lightest --prompt_spacing=Compact --icons='Many icons' --transient=No"
   '';
-
-  home.activation.setFishDefaultShell = config.lib.dag.entryAfter ["tideConfigure"] ''
-    fish_bin="$(command -v fish)"
-    if [ -n "$fish_bin" ]; then
-      if ! grep -qx "$fish_bin" /etc/shells; then
-        echo "$fish_bin" | sudo tee -a /etc/shells >/dev/null
-      fi
-      if command -v chsh >/dev/null 2>&1; then
-        if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$fish_bin" ]; then
-          chsh -s "$fish_bin" || true
-        fi
-      fi
-    fi
-  '';
 }
