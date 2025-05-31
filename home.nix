@@ -14,6 +14,7 @@
     curl
     vim
     neofetch
+    starship
   ];
 
   home.file = {
@@ -57,6 +58,13 @@
     interactiveShellInit = ''
       set -U fish_user_paths /nix/var/nix/profiles/default/bin /run/current-system/sw/bin $HOME/.nix-profile/bin /usr/local/bin $fish_user_paths
     '';
+  };
+
+  programs.starship = {
+    enable = true;
+    settings = {
+      # Add custom Starship settings here if desired
+    };
   };
 
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
