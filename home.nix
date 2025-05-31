@@ -1,12 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  # Use environment variables to avoid recursion
-  home.username = builtins.getEnv "USER";
-  home.homeDirectory = builtins.getEnv "HOME";
+  home.username = lib.mkDefault (builtins.getEnv "USER");
+  home.homeDirectory = lib.mkDefault (builtins.getEnv "HOME");
   home.stateVersion = "25.05";
 
-  # Packages to install
   home.packages = with pkgs; [
     hello
     (writeShellScriptBin "my-hello" ''
@@ -19,30 +17,25 @@
     starship
   ];
 
-  # Custom files (dotfiles, scripts, etc.)
   home.file = {
     "bin/hm" = {
       executable = true;
       text = ''
         #!/bin/sh
-        exec home-manager -f "$HOME/nix-windows/home.nix" switch "$@"
+        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
       '';
     };
   };
 
-  # Environment variables
   home.sessionVariables = {
     EDITOR = "vim";
-    HOME_MANAGER_CONFIG = "$HOME/nix-windows/home.nix";
+    HOME_MANAGER_CONFIG = "${config.home.homeDirectory}/nix-windows/home.nix";
   };
 
-  # Add ~/bin to PATH
-  home.sessionPath = [ "$HOME/bin" ];
+  home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
-  # Enable Home Manager
   programs.home-manager.enable = true;
 
-  # Fish shell configuration
   programs.fish = {
     enable = true;
     functions = {
@@ -68,15 +61,11 @@
     '';
   };
 
-  # Starship prompt configuration
   programs.starship = {
     enable = true;
-    settings = {
-      # Add custom Starship settings here if desired
-    };
+    settings = { };
   };
 
-  # Run tide configure after activation
   home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
     ${pkgs.fish}/bin/fish -c "tide configure --auto \
       --style=Rainbow \

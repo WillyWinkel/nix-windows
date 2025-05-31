@@ -6,17 +6,17 @@ export HOME_MANAGER_CONFIG="$HOME/nix-windows/home.nix"
 
 echo "==> Checking and installing base dependencies..."
 
-MISSING_PKGS=""
+MISSING_PKGS=()
 for pkg in git sudo passwd curl; do
   if ! command -v "$pkg" >/dev/null 2>&1; then
-    MISSING_PKGS="$MISSING_PKGS $pkg"
+    MISSING_PKGS+=("$pkg")
   fi
 done
 
-if [ -n "$MISSING_PKGS" ]; then
-  echo "Installing missing packages:$MISSING_PKGS"
+if [ "${#MISSING_PKGS[@]}" -ne 0 ]; then
+  echo "Installing missing packages: ${MISSING_PKGS[*]}"
   sudo apt-get update
-  sudo apt-get install -y $MISSING_PKGS
+  sudo apt-get install -y "${MISSING_PKGS[@]}"
 else
   echo "All base dependencies already installed."
 fi
@@ -29,8 +29,6 @@ if [ ! -d "$TARGET_DIR" ]; then
 else
   git -C "$TARGET_DIR" pull --ff-only
 fi
-
-cd "$TARGET_DIR"
 
 # Source Nix profile early for current shell and ensure .bashrc is set up
 BASHRC="$HOME/.bashrc"
@@ -78,23 +76,17 @@ else
 fi
 
 echo "==> Configuring nixpkgs channel..."
-if nix-channel --list | grep -q '^nixpkgs '; then
-  nix-channel --remove nixpkgs
-fi
-nix-channel --add https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
+nix-channel --add --force https://nixos.org/channels/nixpkgs-25.05-darwin nixpkgs
 nix-channel --update
 
 echo "==> Configuring Home Manager channel..."
-if nix-channel --list | grep -q '^home-manager '; then
-  nix-channel --remove home-manager
-fi
-nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
+nix-channel --add --force https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
 nix-channel --update
 
 echo "==> Checking for Home Manager installation..."
 if ! command -v home-manager >/dev/null 2>&1; then
   echo "Installing Home Manager..."
-  nix-shell '<home-manager>' -A install
+  nix-shell -p home-manager --run "home-manager install"
 else
   echo "Home Manager already installed."
 fi
@@ -117,7 +109,7 @@ if [ -x "$FISH_PATH" ]; then
   else
     echo "$FISH_PATH already present in /etc/shells."
   fi
-  CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
+  CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "${SHELL:-}")"
   if [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
     echo "Setting fish as the default shell for $USER..."
     chsh -s "$FISH_PATH"
