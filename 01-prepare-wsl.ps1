@@ -109,3 +109,4 @@ try {
     Pause-IfInteractive
     exit 1
 }
+Pause-IfInteractive  # Ensures the window stays open even after success
