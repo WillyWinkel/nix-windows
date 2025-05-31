@@ -1,4 +1,3 @@
-
 set -euxo pipefail
 
 # Install dependencies for Nix and Home Manager
@@ -33,5 +32,16 @@ FISH_PATH="$(command -v fish || echo /run/current-system/sw/bin/fish)"
 grep -qx "$FISH_PATH" /etc/shells || echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
 CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
 [ "$CURRENT_SHELL" = "$FISH_PATH" ] || chsh -s "$FISH_PATH"
+
+# Install fonts from files/font to Windows host (if running under WSL)
+if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows/Fonts ]; then
+  echo "Installing custom fonts to Windows..."
+  for font in "$(dirname "$0")"/files/font/*; do
+    if [ -f "$font" ]; then
+      cp -f "$font" /mnt/c/Windows/Fonts/
+    fi
+  done
+  echo "Fonts installed to Windows. You may need to refresh the font cache or log out/in on Windows."
+fi
 
 echo "Bootstrap complete. You can now run 'home-manager switch'."
