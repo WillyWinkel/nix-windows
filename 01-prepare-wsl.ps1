@@ -18,10 +18,16 @@ function Pause-IfInteractive {
 }
 
 function Get-WSLVersion {
-    Write-Host "  [Info] Trying to detect WSL version using 'wsl.exe --version'..."
+    Write-Host "  [Info] Trying to detect WSL version using 'wsl.exe -v'..."
     try {
-        $versionOutput = wsl.exe --version 2>&1
-        if ($versionOutput -match "WSL version: ([\d\.]+)") {
+        $versionOutput = wsl.exe -v 2>&1
+        if ($versionOutput -match "([0-9]+\.[0-9]+\.[0-9]+)") {
+            Write-Host "  [Info] Detected WSL version: $($Matches[1])"
+            return [version]$Matches[1]
+        }
+        Write-Host "  [Info] Could not parse version from 'wsl.exe -v'. Trying 'wsl.exe --version'..."
+        $versionOutput2 = wsl.exe --version 2>&1
+        if ($versionOutput2 -match "WSL version: ([\d\.]+)") {
             Write-Host "  [Info] Detected WSL version: $($Matches[1])"
             return [version]$Matches[1]
         }
