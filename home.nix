@@ -19,7 +19,7 @@
         #!/bin/sh
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
-        exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
+        home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
       '';
     };
   };
