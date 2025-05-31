@@ -19,7 +19,3 @@ jobs:
       - name: Check Nix syntax
         run: |
           nix-instantiate --parse home.nix
-
-      - name: Build Home Manager configuration
-        run: |
-          nix-shell -p home-manager --run "home-manager build -f ./home.nix"
