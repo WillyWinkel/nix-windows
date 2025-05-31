@@ -11,9 +11,14 @@ try {
     $releaseUrl = "https://api.github.com/repos/nix-community/NixOS-WSL/releases/latest"
     $downloadDir = "$env:USERPROFILE\Downloads"
     $response = Invoke-RestMethod -Uri $releaseUrl
+
+    # Show all asset names for debugging
+    $assetNames = $response.assets | ForEach-Object { $_.name }
+    Write-Host "Assets found in latest release:" $assetNames
+
     $asset = $response.assets | Where-Object { $_.name -like "nixos-wsl*.tar.gz" } | Select-Object -First 1
     if (-not $asset) {
-        Write-Error "Could not find nixos-wsl tarball in latest release."
+        Write-Error "Could not find nixos-wsl*.tar.gz tarball in latest release. Assets found: $assetNames"
         pause
         exit 1
     }
