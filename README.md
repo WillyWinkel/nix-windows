@@ -1,0 +1,34 @@
+# nix-windows
+
+A reproducible Nix + Home Manager setup for WSL.
+
+## Quickstart
+
+On a fresh WSL installation, run the following command to bootstrap everything:
+
+```sh
+bash <(curl -fsSL https://raw.githubusercontent.com/WillyWinkel/nix-windows/main/bootstrap.sh)
+```
+
+This will:
+- Install required dependencies
+- Set up passwordless sudo for your user
+- Install Nix and Home Manager
+- Apply the Home Manager configuration
+
+## Manual steps (if needed)
+
+1. Clone this repository:
+   ```sh
+   git clone https://github.com/WillyWinkel/nix-windows.git
+   cd nix-windows
+   ```
+2. Run the bootstrap script:
+   ```sh
+   ./bootstrap.sh
+   ```
+
+## Notes
+
+- The setup is user-agnostic and contains no sensitive data.
+- After installation, you can customize your Home Manager config in `home.nix`.

@@ -1,8 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  home.username = "willy";
-  home.homeDirectory = "/home/willy";
+  # Use dynamic username and home directory
+  home.username = config.home.username or "changeme";
+  home.homeDirectory = config.home.homeDirectory or "/home/${config.home.username or "changeme"}";
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
@@ -36,9 +37,6 @@
     enable = true;
     functions = {
       x = "exit";
-      goland = ''
-        /Users/karluwe/Applications/GoLand.app/Contents/MacOS/goland $argv
-      '';
     };
     plugins = [
       {
