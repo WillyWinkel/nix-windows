@@ -39,11 +39,11 @@
     ];
   };
 
-  home.activation.tideConfigure = config.lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.tideConfigure = config.lib.dag.entryAfter ["writeBoundary"] ''
     ${pkgs.fish}/bin/fish -c 'tide configure --auto --style=Classic --prompt_colors=16 --show_time=No --lean_prompt=No --prompt_connection=Round --prompt_spacing=Compact --icons=Unicode --transient=Yes'
   '';
 
-  home.activation.setFishDefaultShell = config.lib.hm.dag.entryAfter ["tideConfigure"] ''
+  home.activation.setFishDefaultShell = config.lib.dag.entryAfter ["tideConfigure"] ''
     fish_bin="$(command -v fish)"
     if [ -n "$fish_bin" ]; then
       if ! grep -qx "$fish_bin" /etc/shells; then
