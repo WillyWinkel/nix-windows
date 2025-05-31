@@ -57,19 +57,23 @@ if [ -n "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
   chsh -s "$FISH_PATH"
 fi
 
-# --- Install fonts from files/font to Windows host (if running under WSL) ---
-if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows/Fonts ]; then
-  echo "Installing custom fonts to Windows..."
+# --- Move fonts to TODO-Fonts folder on Windows Desktop (if running under WSL) ---
+if grep -qi microsoft /proc/version && [ -d /mnt/c/Windows ]; then
+  echo "Moving custom fonts to Windows Desktop (TODO-Fonts)..."
   FONT_SRC="$(dirname "$0")/files/font"
+  WIN_USER="$(cmd.exe /c echo %USERNAME% | tr -d '\r')"
+  DESKTOP_PATH="/mnt/c/Users/$WIN_USER/Desktop/TODO-Fonts"
   if [ -d "$FONT_SRC" ]; then
+    mkdir -p "$DESKTOP_PATH"
     for font in "$FONT_SRC"/*; do
       if [ -f "$font" ]; then
-        cp -f "$font" /mnt/c/Windows/Fonts/
+        cp -f "$font" "$DESKTOP_PATH/"
       fi
     done
-    echo "Fonts installed to Windows. You may need to refresh the font cache or log out/in on Windows."
+    echo "Fonts moved to $DESKTOP_PATH."
+    echo "To install the fonts: Open the 'TODO-Fonts' folder on your Windows Desktop, select all font files, right-click, and choose 'Install' or 'Install for all users'."
   else
-    echo "Font source directory '$FONT_SRC' does not exist, skipping font installation."
+    echo "Font source directory '$FONT_SRC' does not exist, skipping font move."
   fi
 fi
 
