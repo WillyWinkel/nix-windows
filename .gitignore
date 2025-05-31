@@ -1,12 +1,14 @@
-# Nix & devenv
+# Nix build artifacts
 result/
 result-*/
 .nix-gc-*
+
+# devenv
 .devenv/
 .devenv.*
 devenv.lock
 
-# Python
+# Python bytecode
 __pycache__/
 *.pyc
 
@@ -20,15 +22,15 @@ Thumbs.db
 # Logs
 *.log
 
-# Node/npm (if ever used)
+# Node/npm
 node_modules/
 
-# Backup files
+# Backup and temp files
 *.bak
 *.tmp
 
 # VSCode
 .vscode/
 
-# JetBrains
+# JetBrains IDEs
 .idea/

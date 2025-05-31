@@ -9,6 +9,7 @@
 #>
 
 $ErrorActionPreference = "Stop"
+$ProgressPreference = 'SilentlyContinue'
 
 function Pause-IfInteractive {
     if ($Host.Name -eq "ConsoleHost") {
@@ -50,7 +51,7 @@ try {
     # Step 1: Check for Administrator privileges
     Write-Host "Step 1/7: Checking for Administrator privileges..."
     if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        Write-Host "ERROR: This script must be run as Administrator." -ForegroundColor Red
+        Write-Error "This script must be run as Administrator."
         Pause-IfInteractive
         exit 1
     }
@@ -64,17 +65,28 @@ try {
 
     # Step 4: Install WSL2 (no default distribution)
     Write-Host "Step 4/7: Ensuring WSL2 is installed (no default distribution)..."
+    if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) {
+        Write-Error "wsl.exe not found. Please ensure WSL is available on your system."
+        Pause-IfInteractive
+        exit 1
+    }
     wsl --install --no-distribution
 
     # Step 5: Download latest NixOS-WSL .wsl file if not present
     Write-Host "Step 5/7: Checking for latest NixOS-WSL installer (.wsl file)..."
     $releaseUrl = "https://api.github.com/repos/nix-community/NixOS-WSL/releases/latest"
     $downloadDir = "$env:USERPROFILE\Downloads"
-    $response = Invoke-RestMethod -Uri $releaseUrl
+    try {
+        $response = Invoke-RestMethod -Uri $releaseUrl
+    } catch {
+        Write-Error "Failed to fetch release info from GitHub. Check your internet connection."
+        Pause-IfInteractive
+        exit 1
+    }
 
     $asset = $response.assets | Where-Object { $_.name -eq "nixos.wsl" } | Select-Object -First 1
     if (-not $asset) {
-        Write-Host "ERROR: Could not find nixos.wsl in latest release." -ForegroundColor Red
+        Write-Error "Could not find nixos.wsl in latest release."
         Pause-IfInteractive
         exit 1
     }
@@ -84,8 +96,14 @@ try {
         Write-Host "Step 6/7: File $($asset.name) already exists in $downloadDir. Skipping download." -ForegroundColor Yellow
     } else {
         Write-Host "Step 6/7: Downloading $($asset.name) to $downloadDir ..."
-        Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $wslPath
-        Write-Host "Downloaded $($asset.name) to $downloadDir" -ForegroundColor Green
+        try {
+            Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $wslPath
+            Write-Host "Downloaded $($asset.name) to $downloadDir" -ForegroundColor Green
+        } catch {
+            Write-Error "Failed to download $($asset.name)."
+            Pause-IfInteractive
+            exit 1
+        }
     }
 
     # Step 7: Check WSL version and launch installer
@@ -95,28 +113,33 @@ try {
         Write-Host "WARNING: Could not determine WSL version. Please ensure you have WSL >= 2.4.4 for .wsl installer support." -ForegroundColor Yellow
         Write-Host "Attempting to launch the installer anyway..."
     } elseif ($wslVersion -lt [version]"2.4.4") {
-        Write-Host "ERROR: WSL version $wslVersion detected. NixOS WSL requires WSL >= 2.4.4. Please update WSL." -ForegroundColor Red
+        Write-Error "WSL version $wslVersion detected. NixOS WSL requires WSL >= 2.4.4. Please update WSL."
         Pause-IfInteractive
         exit 1
     } else {
         Write-Host "WSL version $wslVersion detected."
     }
 
-    Write-Host "Launching $($asset.name) to install NixOS WSL..."
-    try {
-        Start-Process -FilePath $wslPath -ErrorAction Stop
-        Write-Host "Installer launched. Follow the prompts to complete installation."
-    } catch {
-        Write-Host "ERROR: Failed to launch installer. Please double-click $($wslPath) manually." -ForegroundColor Red
-        Pause-IfInteractive
-        exit 1
+    # Check if NixOS is already installed in WSL
+    Write-Host "Checking if NixOS is already installed in WSL..."
+    $distroList = & wsl.exe -l --quiet 2>$null
+    if ($distroList -match "^NixOS$") {
+        Write-Host "NixOS is already installed in WSL. Skipping installer launch." -ForegroundColor Green
+        Write-Host "You can start it with: wsl -d NixOS"
+    } else {
+        Write-Host "Launching $($asset.name) to install NixOS WSL..."
+        try {
+            Start-Process -FilePath $wslPath -ErrorAction Stop
+            Write-Host "Installer launched. Follow the prompts to complete installation."
+        } catch {
+            Write-Error "Failed to launch installer. Please double-click $($wslPath) manually."
+            Pause-IfInteractive
+            exit 1
+        }
     }
 
-    Write-Host "`nAfter installation, you can run NixOS with: wsl -d NixOS"
-    Pause-IfInteractive
 } catch {
-    Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Error "$($_.Exception.Message)"
     Pause-IfInteractive
     exit 1
 }
-Pause-IfInteractive  # Ensures the window stays open even after success
