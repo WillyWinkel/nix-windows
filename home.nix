@@ -58,7 +58,7 @@
     ];
     shellInit = ''
       set -gx EDITOR vim
-      set -g fish_greeting "🐟 time to fish :)"
+      set -g fish_greeting "🐟 time to fish ((("
     '';
     interactiveShellInit = ''
       set -g fish_user_paths /nix/var/nix/profiles/default/bin /run/current-system/sw/bin $HOME/.nix-profile/bin /usr/local/bin $fish_user_paths
