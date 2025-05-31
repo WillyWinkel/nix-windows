@@ -3,17 +3,21 @@ set -eux
 
 # --- Install base dependencies for Nix and Home Manager ---
 sudo apt-get update
-sudo apt-get install -y git sudo passwd
+sudo apt-get install -y git sudo passwd curl
 
 # --- Install Nix if not already installed ---
 if ! command -v nix >/dev/null 2>&1; then
   echo "Installing Nix..."
-  sh <(curl -L https://nixos.org/nix/install) --no-daemon
+  curl -L https://nixos.org/nix/install -o /tmp/nix-install.sh
+  sh /tmp/nix-install.sh --no-daemon
 fi
 
 # --- Source Nix profile if available ---
 if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
   . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+elif [ -e "$HOME/.nix-profile/etc/profile.d/nix.fish" ]; then
+  # fallback for fish users
+  . "$HOME/.nix-profile/etc/profile.d/nix.fish"
 fi
 
 # --- Add or update Home Manager channel to 25.05 ---
@@ -29,15 +33,20 @@ if ! command -v home-manager >/dev/null 2>&1; then
 fi
 
 # --- Run home-manager switch to apply configuration ---
-home-manager switch
+if command -v home-manager >/dev/null 2>&1; then
+  home-manager switch
+else
+  echo "home-manager not found after installation, aborting."
+  exit 1
+fi
 
 # --- Prepare fish as default shell (do not remove this block!) ---
 FISH_PATH="$(command -v fish || echo /run/current-system/sw/bin/fish)"
-if ! grep -qx "$FISH_PATH" /etc/shells; then
+if [ -n "$FISH_PATH" ] && ! grep -qx "$FISH_PATH" /etc/shells; then
   echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
 fi
 CURRENT_SHELL="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")"
-if [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
+if [ -n "$FISH_PATH" ] && [ "$CURRENT_SHELL" != "$FISH_PATH" ]; then
   chsh -s "$FISH_PATH"
 fi
 
