@@ -1,5 +1,17 @@
 # NixOS WSL Automated Setup
 
+This repository provides a robust, automated, and professional workflow for installing and configuring [NixOS-WSL](https://github.com/nix-community/NixOS-WSL) on Windows.
+It includes a single script to enable WSL2, download and install the latest NixOS WSL release, and perform initial configuration inside the NixOS environment.
+The goal is to make running and managing NixOS under Windows as seamless and reproducible as possible, with clear user feedback and best practices for robustness and portability.
+
+## What does this repository do?
+
+- Enables all required Windows features for WSL2
+- Installs WSL2 (if not already installed)
+- Downloads the latest NixOS-WSL installer (`nixos.wsl`) if not already present
+- Launches the installer for you
+- Provides an optional script for initial NixOS configuration inside WSL
+
 ## Requirements
 
 - Windows 10/11 with virtualization support
@@ -9,34 +21,26 @@
 
 ## Steps
 
-1. **Enable WSL2 and download NixOS-WSL:**
+1. **Enable WSL2, download, and install NixOS-WSL:**
 
-   Run this one-liner in PowerShell **as Administrator** to enable WSL2 and download the latest NixOS-WSL installer:
+   Run this one-liner in PowerShell **as Administrator**:
    ```powershell
    irm https://raw.githubusercontent.com/WillyWinkel/nix-windows/refs/heads/main/01-prepare-wsl.ps1 | iex
    ```
    This script will:
    - Enable required Windows features for WSL2
    - Install WSL2 (if not already installed)
-   - Download the latest `nixos.wsl` installer to your Downloads folder
+   - Download the latest `nixos.wsl` installer to your Downloads folder (if not already present)
+   - Launch the installer for you
 
-2. **Install NixOS WSL:**
-
-   Run this one-liner in PowerShell **as Administrator** to launch the installer automatically:
-   ```powershell
-   irm https://raw.githubusercontent.com/WillyWinkel/nix-windows/refs/heads/main/02-import-nixos.ps1 | iex
-   ```
-   Or, double-click the downloaded `nixos.wsl` file in your Downloads folder.  
-   (Requires WSL >= 2.4.4. This will install NixOS as a WSL distribution.)
-
-3. **Run NixOS:**
+2. **Run NixOS:**
 
    Open a terminal and run:
    ```powershell
    wsl -d NixOS
    ```
 
-4. **(Optional) Run initial setup in NixOS WSL:**
+3. **(Optional) Run initial setup in NixOS WSL:**
 
    Run this one-liner in your NixOS WSL terminal:
    ```bash
