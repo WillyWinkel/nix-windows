@@ -20,7 +20,6 @@
         cd "${config.home.homeDirectory}/nix-windows"
         git pull
         exec home-manager -f "${config.home.homeDirectory}/nix-windows/home.nix" switch "$@"
-        fish -c "echo $fish_greeting"
       '';
     };
   };
@@ -52,7 +51,7 @@
     ];
     shellInit = ''
       set -gx EDITOR vim
-      set -g fish_greeting "🐟 hello there!"
+      set -g fish_greeting "🐟 time to fish!"
     '';
     interactiveShellInit = ''
       set -g fish_user_paths /nix/var/nix/profiles/default/bin /run/current-system/sw/bin $HOME/.nix-profile/bin /usr/local/bin $fish_user_paths
