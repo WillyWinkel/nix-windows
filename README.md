@@ -42,3 +42,7 @@ hm
 
 - The setup is user-agnostic and contains no sensitive data.
 - After installation, you can customize your Home Manager config in `~/nix-windows/home.nix`.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
